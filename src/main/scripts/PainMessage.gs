@@ -1,4 +1,4 @@
-function createPainMessage(debtors, event) {
+function PainMessage(debtors, event) {
    this.getDrctDbtTxInfXml = function (debtor) {
       return "<DrctDbtTxInf xmlns='" + nameSpace + "'>" +
 				"<PmtId><EndToEndId>" + event.parameter.endtoendid + "-" + debtor.mndtid + "</EndToEndId></PmtId>" +
