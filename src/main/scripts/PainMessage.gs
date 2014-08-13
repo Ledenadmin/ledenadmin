@@ -1,18 +1,18 @@
 var PainMessage = function (settings) {
   var nameSpace = "urn:iso:std:iso:20022:tech:xsd:pain.008.001.02";
-  var nbOfTxsFRST = 0; 
-  var nbOfTxsRCUR = 0;
 
   this.getXml = function(debtors) {
-    var pmtInfFRST = new getPmtInfXml('FRST');
-    var pmtInfRCUR = new getPmtInfXml('RCUR');
+	var pmtInfo = { 
+		FRST : new getPmtInfXml('FRST'), 
+		RCUR : new getPmtInfXml('RCUR')
+	}
 
-    for (var i = 0, debtor; d = debtors[i] ? { debtor: debtors[i], pmtInf : isFirst(debtors[i].seqtp) ? pmtInfFRST : pmtInfRCUR} : false; i++)
-      addTransaction(d.pmtInf, d.pmtInf == pmtInfFRST, new getDrctDbtTxInfXml(d.debtor).getXml());
+    for (var i = 0, debtor; debtor = debtors[i]; i++)
+      pmtInfo[debtor.seqtp].addContent(getDrctDbtTxInfXml(debtor)); 
      
-    return getDocumentXml(pmtInfFRST.getXml() + pmtInfRCUR.getXml());
+    return getDocumentXml(pmtInfo.FRST.getXml() + pmtInfo.RCUR.getXml(), debtors.length);
   }
-
+  
   var getPmtInfXml = function (paymentType) {
     var xml = "";
     this.addContent = function (contentXml) { xml += contentXml; }
@@ -49,21 +49,7 @@ var PainMessage = function (settings) {
     }
   }
   
-  var addTransaction = function(pmtInf, isFirst, xml) { 
-    pmtInf.addContent(xml); 
-    updateTransactionCount(isFirst);
-  }
-
-  var isFirst = function (flag) { 
-    return flag == 'FRST';
-  }
-  
-  var updateTransactionCount = function(isFirst) { 
-    if (isFirst) nbOfTxsFRST++; else nbOfTxsRCUR++; 
-  }
-
   var getDrctDbtTxInfXml = function (debtor) {
-    this.getXml = function () { 
       return "<DrctDbtTxInf xmlns='" + nameSpace + "'>" +
                "<PmtId><EndToEndId>" + settings.endtoendid + "-" + debtor.mndtid + "</EndToEndId></PmtId>" +
                "<InstdAmt Ccy='EUR'>" + debtor.instdamt + "</InstdAmt>" + 
@@ -83,16 +69,15 @@ var PainMessage = function (settings) {
                "<UltmtDbtr><Nm>" + debtor.dbtrnm + "</Nm></UltmtDbtr>" +
                "<RmtInf><Ustrd>" + debtor.dbtrustrd + "</Ustrd></RmtInf>" + 
              "</DrctDbtTxInf>";
-    }
   }
   
-  var getDocumentXml = function (xml) {
+  var getDocumentXml = function (xml, nrOfTransactions) {
     return "<Document xmlns='" + nameSpace + "' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>" +
                "<CstmrDrctDbtInitn>" +
                  "<GrpHdr>" +
                    "<MsgId>" + settings.endtoendid + settings.creationdatetime.split('T')[0] + "</MsgId>" +
                    "<CreDtTm>" + settings.creationdatetime + "</CreDtTm>" +
-                   "<NbOfTxs>" + (nbOfTxsFRST + nbOfTxsRCUR) + "</NbOfTxs>" +
+                   "<NbOfTxs>" + nrOfTransactions + "</NbOfTxs>" +
                    "<InitgPty><Nm>" + settings.initiatingparty + "</Nm></InitgPty>" +
                  "</GrpHdr>" + xml + 
                "</CstmrDrctDbtInitn>" +
