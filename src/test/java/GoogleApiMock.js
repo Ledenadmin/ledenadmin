@@ -19,7 +19,7 @@ var GoogleApiMock = function() {
     this.setSpacingBefore = function(spacing) { settings.spacingBefore = spacing; }
 	this.setSpacingAfter = function (spacing) { settings.spacingAfter = spacing; }
 	this.setLineSpacing = function(spacing) { settings.lineSpacing = spacing; }
-	this.appendHorizontalRule = function() { if (content != '') horizontalRules.push(''); }
+	this.appendHorizontalRule = function() { horizontalRules.push(''); }
 	this.getHorizontalRulesCount = function() { return horizontalRules.length; }
 	this.getText = function() { return content; }
   }
@@ -36,8 +36,8 @@ var GoogleApiMock = function() {
 	var getSearchResults = function() {
       var elements = content.split('\n');
 	  var results = new Array(elements.length);
-	  for (var i = 0, element; element = i < elements.length ? elements[i] ? elements[i] : ' ' : false; i++)
-	    results[i] = new googleApiMock.SearchResult(element);
+      for (var i = 0; i < elements.length; i++)
+        results[i] = new googleApiMock.SearchResult(elements[i]);
 	  return results;
 	}
 	var searchResults = getSearchResults();
@@ -48,7 +48,7 @@ var GoogleApiMock = function() {
 	this.setWidth = function(width) { properties.width = width; }
 	this.editAsText = function() { return properties.text;}
 	this.findElement = function(type, result) {
-	  if (type != 'PARAGRAPH')
+	  if (type != 'PARAGRAPH' || content == '')
 	    return null;
       if (result == null)
 	    currentIndex = 0;

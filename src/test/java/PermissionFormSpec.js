@@ -144,7 +144,7 @@ describe("PermissionForm", function() {
 	var searchResult = null;
 	for (var i = 0; i < 3; i++)
 	  searchResult = cell.findElement('PARAGRAPH', searchResult);
-	var paragraph = searchResult.getElement().asParagraph();
-	expect(paragraph.getHorizontalRulesCount()).toEqual(isUnderlined ? 1 : 0);
+	var expectedUnderline = searchResult != null ? searchResult.getElement().asParagraph().getHorizontalRulesCount() : 0;
+	expect(expectedUnderline).toEqual(isUnderlined ? 1 : 0);
   }
 });
