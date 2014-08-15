@@ -1,4 +1,10 @@
-var PainMessage = function (settings) {
+if (!org)
+  var org = {}
+  
+if (!org.ledenadmin)
+  org.ledenadmin = {}
+
+org.ledenadmin.PainMessage = function (settings) {
   var nameSpace = "urn:iso:std:iso:20022:tech:xsd:pain.008.001.02";
 
   this.getXml = function(debtors) {

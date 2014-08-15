@@ -14,12 +14,12 @@ describe("PermissionForm", function() {
 	  plaats : 'plaats',
 	  iban : 'iban'
   };
-  var googleApiMock = new GoogleApiMock();
+  var googleApiMock = new org.ledenadmin.GoogleApiMock();
   var body = new googleApiMock.Body();
   
   beforeEach(function() {
     if (permissionForm) return;
-    permissionForm = new PermissionForm(settings, body, googleApiMock.DocumentApp);
+    permissionForm = new org.ledenadmin.PermissionForm(settings, body, googleApiMock.DocumentApp);
 	permissionForm.generate();
     elements = body.getElements();
   });

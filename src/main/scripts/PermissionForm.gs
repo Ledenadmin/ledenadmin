@@ -1,4 +1,10 @@
-function PermissionForm(settings, body, DocumentApp) {
+if (!org)
+  var org = {}
+  
+if (!org.ledenadmin)
+  org.ledenadmin = {}
+
+org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
   var margin = 20;
   
   this.generate = function() {

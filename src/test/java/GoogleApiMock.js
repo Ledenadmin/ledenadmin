@@ -1,4 +1,10 @@
-var GoogleApiMock = function() {
+if (!org)
+  var org = {}
+  
+if (!org.ledenadmin)
+  org.ledenadmin = {}
+
+org.ledenadmin.GoogleApiMock = function() {
   var googleApiMock = this;
   this.DocumentApp = { FontFamily : { COURIER_NEW : 'COURIER_NEW' }, ElementType : { PARAGRAPH : 'PARAGRAPH' } }
 
