@@ -1,11 +1,8 @@
-if (!org)
-  var org = {}
-  
-if (!org.ledenadmin)
-  org.ledenadmin = {}
-
-org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
-  var margin = 20;
+var PermissionForm = function(settings, body, DocumentApp) {
+  var pageWidth = 595;
+  var margin = { top : 20, left : 50, right : 30, bottom : 20 };
+  var headerColumnWidths = [100, 15];
+  var bodyColumnWidths = [150];
   
   this.generate = function() {
     setDocProperties();
@@ -17,22 +14,29 @@ org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
   }
 
   var setDocProperties = function() {
-    body.setMarginBottom(margin);
-    body.setMarginTop(margin);
-    body.setMarginLeft(margin);
-    body.setMarginRight(margin);
+    body.setMarginBottom(margin.bottom);
+    body.setMarginTop(margin.top);
+    body.setMarginLeft(margin.left);
+    body.setMarginRight(margin.right);
   }
   
   var addHeader = function() {
     this.rows = [ ['Doorlopende machtiging', ' ', 'SEPA'] ];
     this.columns = [
-        {cellWidth: 450, cellColor : '#93c47d', fontColor : '#ffffff', fontSize : 24},
-        {cellWidth: 25, cellColor : '#ffffff', fontColor : '#ffffff', fontSize : 24},
-        {cellWidth: 100, cellColor : '#351c75', fontColor : '#ffffff', fontSize : 24}
+        {cellWidth: headerColumnWidths[0], cellColor : '#93c47d', fontColor : '#ffffff', fontSize : 24},
+        {cellWidth: headerColumnWidths[1], cellColor : '#ffffff', fontColor : '#ffffff', fontSize : 24},
+        {cellWidth: fillOut(headerColumnWidths), cellColor : '#351c75', fontColor : '#ffffff', fontSize : 24}
       ];
     this.sectionSettings = { };
     
     setFormFieldProperties();
+  }
+  
+  var fillOut = function(columnWidths) {
+    var spaceLeft = pageWidth - margin.left - margin.right;
+    for (var i = 0; i < columnWidths.length; i++)
+      spaceLeft -= columnWidths[i];
+    return spaceLeft;
   }
   
   var addClubFields = function() {
@@ -42,12 +46,12 @@ org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
         ['Adres', settings.adresClub],
         ['Postcode, plaats', settings.postcodeClub + ' ' + settings.plaatsClub],
         ['Incassant ID', settings.incassantId],
-        ['Kenmerk machtiging', settings.kenmerk],
+        ['Kenmerk machtiging', settings.mandaatId],
         ['Reden betaling', settings.redenBetaling]
       ];
     this.columns = [
-        {cellWidth : 150, fontSize : 11},
-        {cellWidth : 300, fontSize : 11, fontFamily : DocumentApp.FontFamily.COURIER_NEW}
+        {cellWidth : bodyColumnWidths[0], fontSize : 11},
+        {cellWidth : fillOut(bodyColumnWidths), fontSize : 11, fontFamily : DocumentApp.FontFamily.COURIER_NEW}
       ];
     this.sectionSettings = { };
     
@@ -63,7 +67,7 @@ org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
       'Als u het niet eens bent met deze afschrijving kunt u deze laten terugboeken. Neem hiervoor binnen 8 weken na ' +
       'afschrijving contact op met uw bank. Vraag uw bank naar de voorwaarden.']
     ];
-    this.columns = [ { cellWidth : 575 } ];
+    this.columns = [ { cellWidth : fillOut([]) } ];
     this.sectionSettings = { borderWidth : 1, borderColor : '#93c47d' };
     
     setFormFieldProperties();
@@ -77,8 +81,8 @@ org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
       ['IBAN', settings.iban]
     ];
     this.columns = [
-        {cellWidth : 150},
-        {cellWidth : 300, fontFamily : DocumentApp.FontFamily.COURIER_NEW}
+        {cellWidth : bodyColumnWidths[0]},
+        {cellWidth : fillOut(bodyColumnWidths), fontFamily : DocumentApp.FontFamily.COURIER_NEW}
       ];
     this.sectionSettings = { };
     
@@ -89,11 +93,11 @@ org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
     this.rows = [
       ['Plaats en datum', '\n\n'],
       [' ', ''],
-      ['Handtekekening', '\n\n'],
+      ['Handtekening', '\n\n'],
     ];
     this.columns = [
-        {cellWidth : 150},
-        {cellWidth : 300, underline : true, linespacingafter : 10}
+        {cellWidth : bodyColumnWidths[0]},
+        {cellWidth : fillOut(bodyColumnWidths), underline : true, linespacingafter : 10}
     ];
     this.sectionSettings = { };
     
@@ -127,18 +131,20 @@ org.ledenadmin.PermissionForm = function(settings, body, DocumentApp) {
     if (properties.fontFamily)
       text.setFontFamily(properties.fontFamily);
   }
+  
+  var setParagraphSpacing = function(paragraph) {
+    paragraph.setSpacingBefore(0);
+    paragraph.setSpacingAfter(settings.linespacingafter ? settings.linespacingafter : 0);
+    paragraph.setLineSpacing(settings.linespacing ? settings.linespacing : 1);
+    return paragraph;
+  }
 
   var setLineSpacing = function(cell, properties) {
-     var searchResult = null;
-     var lastParagraph = null;
-     while (searchResult = cell.findElement(DocumentApp.ElementType.PARAGRAPH, searchResult)) {
-       var paragraph = searchResult.getElement().asParagraph();
-       paragraph.setSpacingBefore(0);
-       paragraph.setSpacingAfter(settings.linespacingafter ? settings.linespacingafter : 0);
-       paragraph.setLineSpacing(settings.linespacing ? settings.linespacing : 1);
-       lastParagraph = paragraph;
-     }
-     if (lastParagraph && properties.underline)
-       lastParagraph.appendHorizontalRule();
+    var searchResult = null;
+    var lastParagraph = null;
+    while (searchResult = cell.findElement(DocumentApp.ElementType.PARAGRAPH, searchResult))
+      lastParagraph = setParagraphSpacing(searchResult.getElement().asParagraph());
+    if (lastParagraph && properties.underline)
+      lastParagraph.appendHorizontalRule();
   }
 }

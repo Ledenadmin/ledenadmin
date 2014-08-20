@@ -89,7 +89,7 @@ describe("PainMessage", function() {
   "</Document>";
   
   beforeEach(function() {
-    painMessage = new org.ledenadmin.PainMessage(settings);
+    painMessage = new PainMessage(settings);
   });
 
   it("should generate the expected xml", function() {

@@ -1,15 +1,9 @@
-if (!org)
-  var org = {}
-  
-if (!org.ledenadmin)
-  org.ledenadmin = {}
-
-org.ledenadmin.PainMessage = function (settings) {
+var PainMessage = function (settings) {
   var nameSpace = "urn:iso:std:iso:20022:tech:xsd:pain.008.001.02";
 
   this.getXml = function(debtors) {
     var pmtInfo = { FRST : new getPmtInfXml('FRST'), RCUR : new getPmtInfXml('RCUR') }
-	
+
     for (var i = 0, debtor; debtor = debtors[i]; i++)
       pmtInfo[debtor.seqtp].addContent(getDrctDbtTxInfXml(debtor)); 
      
