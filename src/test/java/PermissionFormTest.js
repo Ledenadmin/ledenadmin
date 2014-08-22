@@ -16,7 +16,7 @@ describe("PermissionForm", function() {
   var googleApiMock = new GoogleApiMock();
   var documentApp = googleApiMock.getDocumentApp();
   var body = new googleApiMock.Body();
-  new PermissionForm(settings, body, documentApp).generate();
+  new PermissionForm().generate(settings, body, documentApp);
   var elements = body.getElements();
   
   beforeEach(function() {
@@ -38,7 +38,7 @@ describe("PermissionForm", function() {
     var table = [
       [{content : 'Doorlopende machtiging', color : '#93c47d'}, {content: ' '}, {content: 'SEPA', color : '#351c75'}]
     ];
-    checkTable(elements[0], table, [100, 15, 400])
+    checkTable(elements[0], table, [400, 15, 100])
   });
   
   it("has a fontsize of 24 and a fontcolor of #ffffff", function () {

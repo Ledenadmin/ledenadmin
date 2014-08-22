@@ -97,11 +97,9 @@ org.ledenadmin.Tekst = function (tekst) {
         {'base':'z','letters':/[\u007A\u24E9\uFF5A\u017A\u1E91\u017C\u017E\u1E93\u1E95\u01B6\u0225\u0240\u2C6C\uA763]/g}
       ];
 
-      for(var i=0; i<defaultDiacriticsRemovalMap.length; i++) {
-        this.tekst = this.tekst.replace(defaultDiacriticsRemovalMap[i].letters, defaultDiacriticsRemovalMap[i].base);
-      }
+      for (var i = 0, diakriet; diakriet = defaultDiacriticsRemovalMap[i]; i++)
+        this.tekst = this.tekst.replace(diakriet.letters, diakriet.base);
 
       return this.tekst;
-
     }
 }

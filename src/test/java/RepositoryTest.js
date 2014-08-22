@@ -2,7 +2,8 @@ describe("Repository", function() {
   var googleApiMock = new GoogleApiMock();
   var spreadSheetApp = googleApiMock.getSpreadSheetApp();
   var spreadSheet = spreadSheetApp.getActiveSpreadSheet();
-  var repository = new Repository(spreadSheet);
+  var utilities = new googleApiMock.getUtilities();
+  var repository = new Repository(spreadSheet, utilities);
   var debtorSheet = spreadSheet.insertSheet('Debiteuren');
   var debtorData = [
 	['Bedrag', 'Mandaat ID', 'Eerste of herhaling', 'Mandaatdatum', 'Betaling namens', 'Naam', 'IBAN', 'Bericht'],

@@ -1,10 +1,14 @@
-var PermissionForm = function(settings, body, DocumentApp) {
+var PermissionForm = function() {
   var pageWidth = 595;
   var margin = { top : 20, left : 50, right : 30, bottom : 20 };
-  var headerColumnWidths = [100, 15];
+  var headerColumnWidths = [400, 15];
   var bodyColumnWidths = [150];
+  var body, settings, DocumentApp;
   
-  this.generate = function() {
+  this.generate = function(documentSettings, documentBody, documentApp) {
+    settings = documentSettings;
+    body = documentBody;
+	DocumentApp = documentApp;
     setDocProperties();
     addHeader();
     addClubFields();
@@ -20,23 +24,23 @@ var PermissionForm = function(settings, body, DocumentApp) {
     body.setMarginRight(margin.right);
   }
   
+  var spaceOut = function(columnWidths) {
+    var spaceLeft = pageWidth - margin.left - margin.right;
+    for (var i in columnWidths)
+      spaceLeft -= columnWidths[i];
+    return spaceLeft;
+  }
+  
   var addHeader = function() {
     this.rows = [ ['Doorlopende machtiging', ' ', 'SEPA'] ];
     this.columns = [
         {cellWidth: headerColumnWidths[0], cellColor : '#93c47d', fontColor : '#ffffff', fontSize : 24},
         {cellWidth: headerColumnWidths[1], cellColor : '#ffffff', fontColor : '#ffffff', fontSize : 24},
-        {cellWidth: fillOut(headerColumnWidths), cellColor : '#351c75', fontColor : '#ffffff', fontSize : 24}
+        {cellWidth: spaceOut(headerColumnWidths), cellColor : '#351c75', fontColor : '#ffffff', fontSize : 24}
       ];
     this.sectionSettings = { };
     
     setFormFieldProperties();
-  }
-  
-  var fillOut = function(columnWidths) {
-    var spaceLeft = pageWidth - margin.left - margin.right;
-    for (var i = 0; i < columnWidths.length; i++)
-      spaceLeft -= columnWidths[i];
-    return spaceLeft;
   }
   
   var addClubFields = function() {
@@ -51,7 +55,7 @@ var PermissionForm = function(settings, body, DocumentApp) {
       ];
     this.columns = [
         {cellWidth : bodyColumnWidths[0], fontSize : 11},
-        {cellWidth : fillOut(bodyColumnWidths), fontSize : 11, fontFamily : DocumentApp.FontFamily.COURIER_NEW}
+        {cellWidth : spaceOut(bodyColumnWidths), fontSize : 11, fontFamily : DocumentApp.FontFamily.COURIER_NEW}
       ];
     this.sectionSettings = { };
     
@@ -67,7 +71,7 @@ var PermissionForm = function(settings, body, DocumentApp) {
       'Als u het niet eens bent met deze afschrijving kunt u deze laten terugboeken. Neem hiervoor binnen 8 weken na ' +
       'afschrijving contact op met uw bank. Vraag uw bank naar de voorwaarden.']
     ];
-    this.columns = [ { cellWidth : fillOut([]) } ];
+    this.columns = [ { cellWidth : spaceOut([]) } ];
     this.sectionSettings = { borderWidth : 1, borderColor : '#93c47d' };
     
     setFormFieldProperties();
@@ -82,7 +86,7 @@ var PermissionForm = function(settings, body, DocumentApp) {
     ];
     this.columns = [
         {cellWidth : bodyColumnWidths[0]},
-        {cellWidth : fillOut(bodyColumnWidths), fontFamily : DocumentApp.FontFamily.COURIER_NEW}
+        {cellWidth : spaceOut(bodyColumnWidths), fontFamily : DocumentApp.FontFamily.COURIER_NEW}
       ];
     this.sectionSettings = { };
     
@@ -97,7 +101,7 @@ var PermissionForm = function(settings, body, DocumentApp) {
     ];
     this.columns = [
         {cellWidth : bodyColumnWidths[0]},
-        {cellWidth : fillOut(bodyColumnWidths), underline : true, linespacingafter : 10}
+        {cellWidth : spaceOut(bodyColumnWidths), underline : true, linespacingafter : 10}
     ];
     this.sectionSettings = { };
     
